@@ -8,7 +8,13 @@ const ExpenseModel = require("../models/ExpenseModel");
 exports.addPayment = async (req, res) => {
     const {title, amount, category, description, dueDate}  = req.body
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const payment = PaymentSchema({
@@ -47,7 +53,13 @@ exports.addPayment = async (req, res) => {
 exports.getPayment = async (req, res) =>{
     try {
         if(req.headers["authorization"]) {
-            let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            try {
+                var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            }
+            catch(err) {
+                console.error(err);
+                return res.status(401).json({message: 'Unauthorized'});
+            }
             let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
             if(user) {
                 const payments = await PaymentSchema.find({userId: user.id}).sort({createdAt: -1})
@@ -67,7 +79,13 @@ exports.getPayment = async (req, res) =>{
 
 exports.deletePayment = async (req, res) =>{
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;
@@ -91,7 +109,13 @@ exports.deletePayment = async (req, res) =>{
 exports.makePayment = async (req, res) =>{
     try {
         if(req.headers["authorization"]) {
-            let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            try {
+                var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            }
+            catch(err) {
+                console.error(err);
+                return res.status(401).json({message: 'Unauthorized'});
+            }
             let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
             if(user) {
                 const {id} = req.params;

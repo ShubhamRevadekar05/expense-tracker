@@ -7,7 +7,13 @@ const { SECRET_KEY } = require("../app");
 exports.addBudget = async (req, res) => {
     const {amount, category}  = req.body
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             
@@ -55,7 +61,13 @@ exports.addBudget = async (req, res) => {
 exports.getBudget = async (req, res) =>{
     try {
         if(req.headers["authorization"]) {
-            let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            try {
+                var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            }
+            catch(err) {
+                console.error(err);
+                return res.status(401).json({message: 'Unauthorized'});
+            }
             let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
             if(user) {
                 const budgets = await BudgetSchema.find({userId: user.id})
@@ -75,7 +87,13 @@ exports.getBudget = async (req, res) =>{
 
 exports.deleteBudget = async (req, res) =>{
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;

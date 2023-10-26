@@ -7,7 +7,13 @@ const { SECRET_KEY } = require("../app");
 exports.addExpense = async (req, res) => {
     const {title, amount, category, description, date}  = req.body
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const expense = ExpenseSchema({
@@ -46,7 +52,13 @@ exports.addExpense = async (req, res) => {
 exports.getExpense = async (req, res) =>{
     try {
         if(req.headers["authorization"]) {
-            let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            try {
+                var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+            }
+            catch(err) {
+                console.error(err);
+                return res.status(401).json({message: 'Unauthorized'});
+            }
             let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
             if(user) {
                 const expenses = await ExpenseSchema.find({userId: user.id}).sort({createdAt: -1})
@@ -66,7 +78,13 @@ exports.getExpense = async (req, res) =>{
 
 exports.deleteExpense = async (req, res) =>{
     if(req.headers["authorization"]) {
-        let userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        try {
+            var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
+        }
+        catch(err) {
+            console.error(err);
+            return res.status(401).json({message: 'Unauthorized'});
+        }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;
