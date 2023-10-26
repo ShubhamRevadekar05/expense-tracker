@@ -1,66 +1,78 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import History from '../../History/History';
 import { InnerLayout } from '../../styles/Layouts';
-import { dollar } from '../../utils/Icons';
-import Chart from '../Chart/Chart';
+import { Chart } from 'chart.js/auto';
+
+// import Chart from '../Chart/Chart';
 
 function Dashboard() {
-    const {totalExpenses,incomes, expenses, totalIncome, totalBalance, getIncomes, getExpenses } = useGlobalContext()
+    const { expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, getPayments, getBudgets } = useGlobalContext()
+    const [dashBoardChart, setDashBoardChart] = useState(null);
+    
+    useEffect(() => {
+        getExpenses();
+        getPayments();
+        getBudgets();
+    }, []);
 
     useEffect(() => {
-        getIncomes()
-        getExpenses()
-    }, [])
+        if(dashBoardChart) dashBoardChart.destroy();
+        setDashBoardChart(new Chart(document.getElementById("dashBoardChart"), {
+            type: 'line',
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [{
+                    label: "Monthly Expense",
+                    data: getTotalYearlyMonthWiseExpense(),
+                    tension: 0.1
+                }],
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Monthly Expense Distribution"
+                    }
+                }
+            }
+        }));
+        let min = Math.min(...expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        }).map(item => item.amount));
+        let max = Math.max(...expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        }).map(item => item.amount))
+        document.getElementById("minExpense").innerText = min === Infinity ? 0 : min;
+        document.getElementById("maxExpense").innerHTML = max === -Infinity ? 0 : max;
+    }, [expenses]);
 
     return (
+        
         <DashboardStyled>
             <InnerLayout>
-                <h1>All Transactions</h1>
+                <h1>Dashboard</h1>
                 <div className="stats-con">
                     <div className="chart-con">
-                        <Chart />
+                        <canvas id="dashBoardChart" />
                         <div className="amount-con">
-                            <div className="income">
-                                <h2>Total Income</h2>
-                                <p>
-                                    {dollar} {totalIncome()}
-                                </p>
-                            </div>
                             <div className="expense">
                                 <h2>Total Expense</h2>
                                 <p>
-                                    {dollar} {totalExpenses()}
-                                </p>
-                            </div>
-                            <div className="balance">
-                                <h2>Total Balance</h2>
-                                <p>
-                                    {dollar} {totalBalance()}
+                                    {getTotalExpensesThisMonth()}
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div className="history-con">
                         <History />
-                        <h2 className="salary-title">Min <span>Salary</span>Max</h2>
+                        <h2 className="salary-title">Min<span>Expenses</span>Max</h2>
                         <div className="salary-item">
-                            <p>
-                                ${Math.min(...incomes.map(item => item.amount))}
-                            </p>
-                            <p>
-                                ${Math.max(...incomes.map(item => item.amount))}
-                            </p>
-                        </div>
-                        <h2 className="salary-title">Min <span>Expense</span>Max</h2>
-                        <div className="salary-item">
-                            <p>
-                                ${Math.min(...expenses.map(item => item.amount))}
-                            </p>
-                            <p>
-                                ${Math.max(...expenses.map(item => item.amount))}
-                            </p>
+                            <p id="minExpense"></p>
+                            <p id="maxExpense"></p>
                         </div>
                     </div>
                 </div>

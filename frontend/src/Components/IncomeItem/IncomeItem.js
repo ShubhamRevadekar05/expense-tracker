@@ -62,8 +62,6 @@ function IncomeItem({
         }
     }
 
-    console.log('type', type)
-
     return (
         <IncomeItemStyled indicator={indicatorColor}>
             <div className="icon">
@@ -77,7 +75,7 @@ function IncomeItem({
                         <p>{calender} {dateFormat(date)}</p>
                         <p>
                             {comment}
-                            {description}
+                            {category}
                         </p>
                     </div>
                     <div className="btn-con">

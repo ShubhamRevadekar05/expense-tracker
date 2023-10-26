@@ -3,26 +3,25 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
 import IncomeItem from '../IncomeItem/IncomeItem';
-import ExpenseForm from './ExpenseForm';
+import PaymentForm from './PaymentForm';
 
-function Expenses() {
-    const {expenses, getExpenses, deleteExpense, getTotalExpensesThisMonth} = useGlobalContext()
+function Payments() {
+    const {payments, getPayments, deletePayment} = useGlobalContext()
 
     useEffect(() =>{
-        getExpenses();
+        getPayments();
     }, [])
     return (
-        <ExpenseStyled>
+        <AnalysisStyled>
             <InnerLayout>
-                <h1>Expenses</h1>
-                <h2 className="total-income">Total Expense: <span>${getTotalExpensesThisMonth()}</span></h2>
+                <h1>Payments</h1>
                 <div className="income-content">
                     <div className="form-container">
-                        <ExpenseForm />
+                        <PaymentForm />
                     </div>
                     <div className="incomes">
-                        {expenses.map((expense) => {
-                            const {_id, title, amount, date, category, description, type} = expense;
+                        {payments.map((payment) => {
+                            const {_id, title, amount, date, category, description} = payment;
                             return <IncomeItem
                                 key={_id}
                                 id={_id} 
@@ -30,20 +29,19 @@ function Expenses() {
                                 description={description} 
                                 amount={amount} 
                                 date={date} 
-                                type={type}
                                 category={category} 
                                 indicatorColor="var(--color-green)"
-                                deleteItem={deleteExpense}
+                                deleteItem={deletePayment}
                             />
                         })}
                     </div>
                 </div>
             </InnerLayout>
-        </ExpenseStyled>
+        </AnalysisStyled>
     )
 }
 
-const ExpenseStyled = styled.div`
+const AnalysisStyled = styled.div`
     display: flex;
     overflow: auto;
     .total-income{
@@ -73,5 +71,5 @@ const ExpenseStyled = styled.div`
     }
 `;
 
-export default Expenses
+export default Payments
 

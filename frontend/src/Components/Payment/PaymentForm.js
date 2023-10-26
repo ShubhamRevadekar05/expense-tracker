@@ -7,18 +7,18 @@ import Button from '../Button/Button';
 import { plus } from '../../utils/Icons';
 
 
-function ExpenseForm() {
-    const {addExpense, error, setError} = useGlobalContext()
+function PaymentForm() {
+    const {addPayment, error, setError} = useGlobalContext()
     const [inputState, setInputState] = useState({
         title: '',
         amount: '',
-        date: '',
+        dueDate: '',
         category: '',
         description: '',
         otherCategory: ''
     })
 
-    const { title, amount, date, category,description, otherCategory } = inputState;
+    const { title, amount, dueDate, category,description, otherCategory } = inputState;
 
     const handleInput = name => e => {
         setInputState({...inputState, [name]: e.target.value})
@@ -27,13 +27,13 @@ function ExpenseForm() {
 
     const handleSubmit = e => {
         e.preventDefault()
-        addExpense(inputState)
+        addPayment(inputState)
         setInputState({
             title: '',
             amount: '',
-            date: '',
+            dueDate: '',
             category: '',
-            description: '',
+            description: ''
         })
     }
 
@@ -44,8 +44,8 @@ function ExpenseForm() {
                 <input 
                     type="text" 
                     value={title}
-                    name={'title'} 
-                    placeholder="Expense Title"
+                    name={'title'}
+                    placeholder="Payment Title"
                     onChange={handleInput('title')}
                 />
             </div>
@@ -53,18 +53,18 @@ function ExpenseForm() {
                 <input value={amount}  
                     type="number" 
                     name={'amount'} 
-                    placeholder={'Expense Amount'}
+                    placeholder={'Payment Amount'}
                     onChange={handleInput('amount')} 
                 />
             </div>
             <div className="input-control">
                 <DatePicker 
                     id='date'
-                    placeholderText='Enter A Date'
-                    selected={date}
+                    placeholderText='Enter Due Date'
+                    selected={dueDate}
                     dateFormat="dd/MM/yyyy"
-                    onChange={(date) => {
-                        setInputState({...inputState, date: date})
+                    onChange={(dueDate) => {
+                        setInputState({...inputState, dueDate: dueDate})
                     }}
                 />
             </div>
@@ -99,7 +99,7 @@ function ExpenseForm() {
             </div>
 <div className="submit-btn">
                 <Button 
-                    name={'Add Expense'}
+                    name={'Add Payment'}
                     icon={plus}
                     bPad={'.8rem 1.6rem'}
                     bRad={'30px'}
@@ -158,4 +158,4 @@ const ExpenseFormStyled = styled.form`
         }
     }
 `;
-export default ExpenseForm
+export default PaymentForm

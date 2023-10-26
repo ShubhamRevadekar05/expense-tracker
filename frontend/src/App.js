@@ -1,34 +1,32 @@
-import React, {useState, useMemo} from 'react'
+import React, {useMemo} from 'react'
 import styled from "styled-components";
 import bg from './img/bg.png'
 import {MainLayout} from './styles/Layouts'
 import Orb from './Components/Orb/Orb'
 import Navigation from './Components/Navigation/Navigation'
 import Dashboard from './Components/Dashboard/Dashboard';
-import Income from './Components/Income/Income'
 import Expenses from './Components/Expenses/Expenses';
+import Payments from './Components/Payment/Payments';
 import Budget from './Components/Budget/Budget';
+import Analysis from './Components/Analysis/Analysis';
 import { useGlobalContext } from './context/globalContext';
 import Register from './Components/LR/Register';
 import Login from './Components/LR/Login';
 function App() {
-  const [active, setActive] = useState(1)
-
-  const global = useGlobalContext()
-  console.log(global);
-
+  const {active} = useGlobalContext();
+  
   const displayData = () => {
     switch(active){
       case 1:
         return <Dashboard />
       case 2:
-        return <Dashboard />
-      case 3:
-        return <Income />
-      case 4: 
         return <Expenses />
+      case 3:
+        return <Payments />
+      case 4: 
+        return <Budget />
       case 5:
-        return <Budget/>
+        return <Analysis />
       case 6:
         return <Register />
       case 7:
@@ -46,7 +44,7 @@ function App() {
     <AppStyled bg={bg} className="App">
       {orbMemo}
       <MainLayout>
-        <Navigation active={active} setActive={setActive} />
+        <Navigation />
         <main>
           {displayData()}
         </main>

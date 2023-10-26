@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useGlobalContext } from '../../context/globalContext';
 
 const Background = styled.div`
   width: 430px;
@@ -68,6 +69,8 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const {register} =  useGlobalContext();
+
   const handleUsername = (e) => {
     setUsername(e.target.value);
   };
@@ -82,7 +85,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic here, e.g., sending data to a server
+    register({username: username, email: email, password: password});
   };
 
   return (

@@ -1,108 +1,288 @@
 import React, { useContext, useState } from "react"
 import axios from 'axios'
 
-
-const BASE_URL = "http://localhost:5000/api/v1/";
-
+const BASE_URL = "http://localhost:8080/api/";
 
 const GlobalContext = React.createContext()
 
 export const GlobalProvider = ({children}) => {
 
-    const [incomes, setIncomes] = useState([])
-    const [expenses, setExpenses] = useState([])
+    const [active, setActive] = useState(1);
+    const [logged, setLogged] = useState(localStorage.getItem("logged") ? true : false);
+    const [expenses, setExpenses] = useState([]);
+    const [payments, setPayments] = useState([]);
+    const [budgets, setBudgets] = useState([]);
     const [error, setError] = useState(null)
 
-    //calculate incomes
-    const addIncome = async (income) => {
-        const response = await axios.post(`${BASE_URL}add-income`, income)
-            .catch((err) =>{
-                setError(err.response.data.message)
-            })
-        getIncomes()
-    }
-
-    const getIncomes = async () => {
-        const response = await axios.get(`${BASE_URL}get-incomes`)
-        setIncomes(response.data)
-        console.log(response.data)
-    }
-
-    const deleteIncome = async (id) => {
-        const res  = await axios.delete(`${BASE_URL}delete-income/${id}`)
-        getIncomes()
-    }
-
-    const totalIncome = () => {
-        let totalIncome = 0;
-        incomes.forEach((income) =>{
-            totalIncome = totalIncome + income.amount
+    const addExpense = async (expense) => {
+        if(expense.category === "Other") expense.category = expense.otherCategory;
+        await axios.post(`${BASE_URL}add-expense`, expense, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
         })
-
-        return totalIncome;
-    }
-
-
-    //calculate incomes
-    const addExpense = async (income) => {
-        const response = await axios.post(`${BASE_URL}add-expense`, income)
-            .catch((err) =>{
-                setError(err.response.data.message)
-            })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
         getExpenses()
     }
 
     const getExpenses = async () => {
-        const response = await axios.get(`${BASE_URL}get-expenses`)
+        const response = await axios.get(`${BASE_URL}get-expenses`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
         setExpenses(response.data)
-        console.log(response.data)
+        //console.log(response.data)
     }
 
     const deleteExpense = async (id) => {
-        const res  = await axios.delete(`${BASE_URL}delete-expense/${id}`)
+        await axios.delete(`${BASE_URL}delete-expense/${id}`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
         getExpenses()
     }
 
-    const totalExpenses = () => {
-        let totalIncome = 0;
-        expenses.forEach((income) =>{
-            totalIncome = totalIncome + income.amount
+    const addPayment = async (payment) => {
+        if(payment.category === "Other") payment.category = payment.otherCategory;
+        await axios.post(`${BASE_URL}add-payment`, payment, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
         })
-
-        return totalIncome;
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        getPayments()
     }
 
-
-    const totalBalance = () => {
-        return totalIncome() - totalExpenses()
+    const getPayments = async () => {
+        const response = await axios.get(`${BASE_URL}get-payments`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+        setPayments(response.data)
+        //console.log(response.data)
     }
 
-    const transactionHistory = () => {
-        const history = [...incomes, ...expenses]
-        history.sort((a, b) => {
-            return new Date(b.createdAt) - new Date(a.createdAt)
+    const deletePayment = async (id) => {
+        await axios.delete(`${BASE_URL}delete-payment/${id}`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
         })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        getPayments()
+    }
+    
+    const addBudget = async (budget) => {
+        if(budget.category === "Other") budget.category = budget.otherCategory;
+        await axios.post(`${BASE_URL}add-budget`, budget, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        getBudgets()
+    }
 
-        return history.slice(0, 3)
+    const getBudgets = async () => {
+        const response = await axios.get(`${BASE_URL}get-budgets`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+        setBudgets(response.data)
+        //console.log(response.data)
+    }
+
+    const deleteBudget = async (id) => {
+        await axios.delete(`${BASE_URL}delete-budget/${id}`, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        getBudgets()
+    }
+
+    const register = async (userDetails) => {
+        await axios.post(`${BASE_URL}register`, userDetails)
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        setActive(7);
+    }
+
+    const login = async (userDetails) => {
+        let response = await axios.post(`${BASE_URL}login`, userDetails)
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        if(response.status === 200) {
+            setLogged(true);
+            localStorage.setItem("logged", true);
+            localStorage.setItem("username", response.data["username"]);
+            localStorage.setItem("email", response.data["email"]);
+            localStorage.setItem("token", response.data["token"]);
+            setActive(1);
+        }
+    }
+
+    const getTotalExpensesThisMonth = () => {
+        var totalExpense = 0;
+        expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        }).forEach(expense => totalExpense += expense.amount)
+        return totalExpense;
+    }
+    
+    const getNumberOfExpensesThisMonth = () => {
+        return expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        }).length
+    }
+
+    const getTotalYearlyMonthWiseExpense = () => {
+        let thisYearsExpenses = expenses.filter(expense => new Date(expense.date).getFullYear() === new Date().getFullYear());
+        let groupedExpenses = new Map();
+        groupedExpenses.set(1, []);
+        groupedExpenses.set(2, []);
+        groupedExpenses.set(3, []);
+        groupedExpenses.set(4, []);
+        groupedExpenses.set(5, []);
+        groupedExpenses.set(6, []);
+        groupedExpenses.set(7, []);
+        groupedExpenses.set(8, []);
+        groupedExpenses.set(9, []);
+        groupedExpenses.set(10, []);
+        groupedExpenses.set(11, []);
+        groupedExpenses.set(12, []);
+        thisYearsExpenses.forEach(element => {
+            groupedExpenses.get(new Date(element.date).getMonth()+1).push(element);
+        });
+        let totalYearsExpenses = [];
+        groupedExpenses.forEach((value, key) => {
+            let total = 0;
+            value.forEach(element => {
+                total += element.amount;
+            });
+            totalYearsExpenses.splice(key-1, 0, total);
+        });
+        return totalYearsExpenses;
+    }
+
+    const getCategories = () => {
+        let categories = ["Education", "Electricity", "Groceries", "Insurance", "Medicine", "Rent", "Transportation"]
+        let expensesThisMonth = expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        });
+        expensesThisMonth.forEach(element => {
+            if(!categories.includes(element.category)) {
+                categories.push(element.category);
+            }
+        });
+        payments.forEach(element => {
+            if(!categories.includes(element.category)) {
+                categories.push(element.category);
+            }
+        });
+        budgets.forEach(element => {
+            if(!categories.includes(element.category)) {
+                categories.push(element.category);
+            }
+        });
+        return categories;
+    }
+
+    const getTotalMonthlyCategoryWiseExpense = () => {
+        let groupedExpenses = new Map();
+        let categories = getCategories();
+        categories.forEach(element => {
+            groupedExpenses.set(element, []);
+        });
+        let expensesThisMonth = expenses.filter(element => {
+            let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+            return new Date(element.date) >= date1
+        });
+        expensesThisMonth.forEach(element => {
+            groupedExpenses.get(element.category).push(element);
+        });
+        let totalExpensesByCategory = [];
+        groupedExpenses.forEach((value, key) => {
+            let total = 0;
+            value.forEach(element => {
+                total += element.amount;
+            });
+            totalExpensesByCategory.push(total);
+        });
+        return totalExpensesByCategory;
+    }
+
+    const getBudgetByCategory = (category) => {
+        var budget = {
+            category,
+            amount: 0
+        }
+        if(category === 'Overall') {
+            budgets.forEach(element => {
+                budget.amount += element.amount;
+            });
+        }
+        else {
+            budgets.filter(element => element.category === category).forEach(element => {
+                budget.amount += element.amount;
+            });
+        }
+        return budget;
     }
 
 
     return (
         <GlobalContext.Provider value={{
-            addIncome,
-            getIncomes,
-            incomes,
-            deleteIncome,
+            active,
+            setActive,
+            logged,
+            setLogged,
             expenses,
-            totalIncome,
             addExpense,
             getExpenses,
             deleteExpense,
-            totalExpenses,
-            totalBalance,
-            transactionHistory,
+            payments,
+            addPayment,
+            getPayments,
+            deletePayment,
+            budgets,
+            addBudget,
+            getBudgets,
+            deleteBudget,
+            register,
+            login,
             error,
-            setError
+            setError,
+            
+            getTotalExpensesThisMonth,
+            getNumberOfExpensesThisMonth,
+            getTotalYearlyMonthWiseExpense,
+            getCategories,
+            getTotalMonthlyCategoryWiseExpense,
+            getBudgetByCategory
         }}>
             {children}
         </GlobalContext.Provider>

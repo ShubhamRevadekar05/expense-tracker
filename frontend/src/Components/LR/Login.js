@@ -1,6 +1,7 @@
 import React, { useState }from 'react';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useGlobalContext } from '../../context/globalContext';
 
 const Background = styled.div`
   width: 430px;
@@ -26,13 +27,13 @@ const Form = styled.form`
   padding: 50px 35px;
 `;
 
-const FormElement = styled.div`
+/* const FormElement = styled.div`
   font-family: 'Poppins', sans-serif;
   color: #ffffff;
   letter-spacing: 0.5px;
   outline: none;
   border: none;
-`;
+`; */
 
 const FormHeading = styled.h3`
   font-size: 32px;
@@ -75,6 +76,7 @@ const Button = styled.button`
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const {login} = useGlobalContext();
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -86,19 +88,14 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic here, e.g., sending data to a server
-    //email passowrd to backend ->localstorage
-    //setIte
-    // localStorage.setItem('username', usernmae);
-    // localStorage.setItem('email', email);
-    // localStorage.setItem('token', token);
+    login({email: email, password: password});
   };
 
   return (
     <div>
       <Background>
       </Background>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <FormHeading>Login Here</FormHeading>
 
         <Label htmlFor="email">Email</Label>

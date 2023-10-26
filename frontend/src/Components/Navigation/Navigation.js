@@ -1,24 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import avatar from '../../img/avatar.png'
 import { signout } from '../../utils/Icons'
 import { menuItems } from '../../utils/menuItems'
-import Login from '../LR/Login'
+import { useGlobalContext } from '../../context/globalContext';
 
-function Navigation({active, setActive}) {
+function Navigation() {
 
-    
+    const {logged, setLogged, active, setActive} = useGlobalContext();
+
     return (
         <NavStyled>
             <div className="user-con">
                 <img src={avatar} alt="" />
                 <div className="text">
-                    <h2>Mike</h2>
-                    <p>Your Money</p>
+                    <h2>{logged ? localStorage.getItem("username") : "Login"}</h2>
+                    <p>{logged ? localStorage.getItem("email") : "Please login in"}</p>
                 </div>
             </div>
             <ul className="menu-items">
-                {menuItems.map((item) => {
+                {menuItems.filter(element => element.id <6).map((item) => {
                     return <li
                         key={item.id}
                         onClick={() => setActive(item.id)}
@@ -29,15 +30,27 @@ function Navigation({active, setActive}) {
                     </li>
                 })}
             </ul>
-            <div className="bottom-nav">
+            <div className="bottom-nav menu-items">
+                {logged ?
+                    <>
+                        <li onClick={() => {localStorage.removeItem("logged"); setLogged(false); setActive(7)}}>
+                            {signout} Sign Out
+                        </li>
+                    </> :
+                    <>
+                        <li onClick={() => setActive(6)} className={active === 6 ? 'active': ''}>
+                            {signout} Register
+                        </li>
+                        <li onClick={() => setActive(7)} className={active === 7 ? 'active': ''}>
+                            {signout} Login
+                        </li>
+                    </>
+                }
+                {/* <a href="../LR/Login">
                 <li>
-                    {signout} Sign Out
-                </li><a href="../LR/Login">
                     {Login} Login
-                    </a>
-                <li>
-
                 </li>
+                </a> */}
             </div>
         </NavStyled>
     )
