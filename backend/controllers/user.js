@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
     let user = await UserSchema.findOne({email: email}).exec();
     if(user) {
         if(user.password === crypto.createHash('sha256').update(password).digest("hex")) {
-            const token = jwt.sign({ username: user.username, email: user.email }, SECRET_KEY, /* { expiresIn: '1h' } */);
+            const token = jwt.sign({ username: user.username, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
             res.status(200).json({username: user.username, email: user.email, token: token});
         }
         else {

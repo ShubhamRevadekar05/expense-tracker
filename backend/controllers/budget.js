@@ -20,7 +20,15 @@ exports.addBudget = async (req, res) => {
             try {
                 //validations
                 let budget = await BudgetSchema.findOne({category: category}).exec();
+                let add = true;
                 if(budget) {
+                    if(amount <= 0 || !amount === 'number'){
+                        return res.status(400).json({message: 'Amount must be a positive number!'})
+                    }
+                    add = false;
+                    await BudgetSchema.findByIdAndUpdate(budget.id, {amount: amount}).exec()
+                }
+                else {
                     budget = BudgetSchema({
                         amount,
                         category,
@@ -33,17 +41,32 @@ exports.addBudget = async (req, res) => {
                     if(amount <= 0 || !amount === 'number'){
                         return res.status(400).json({message: 'Amount must be a positive number!'})
                     }
+                    add = true;
                     await budget.save()
+                }
+                let overallBudgetAmount = 0;
+                const budgets = await BudgetSchema.find({userId: user.id});
+                budgets.forEach(element => {
+                    if(element.category !== "Overall") overallBudgetAmount += element.amount;
+                });
+                let overallBudget = await BudgetSchema.findOne({category: "Overall"}).exec();
+                if(overallBudget) {
+                    let amountToSet = 0;
+                    if(category === "Overall") {
+                        amountToSet = amount > overallBudgetAmount ? amount : overallBudgetAmount;
+                    }
+                    else {
+                        amountToSet = overallBudgetAmount > overallBudget.amount ? overallBudgetAmount : overallBudget.amount;
+                    }
+                    await BudgetSchema.findByIdAndUpdate(overallBudget.id, {amount: amountToSet}).exec()
+                }
+                if(add) {
                     res.status(200).json({message: 'Budget Added'})
-                
                 }
                 else {
-                    if(amount <= 0 || !amount === 'number'){
-                        return res.status(400).json({message: 'Amount must be a positive number!'})
-                    }
-                    await BudgetSchema.findByIdAndUpdate(budget.id, {amount: amount}).exec()
                     res.status(200).json({message: 'Budget Updated'})
                 }
+                
             } catch (error) {
                 res.status(500).json({message: 'Server Error'})
             }
@@ -98,12 +121,12 @@ exports.deleteBudget = async (req, res) =>{
         if(user) {
             const {id} = req.params;
             BudgetSchema.findByIdAndDelete(id).exec()
-                .then((budget) =>{
-                    res.status(200).json({message: 'Budget Deleted'})
-                })
-                .catch((err) =>{
-                    res.status(500).json({message: 'Server Error'})
-                })
+            .then((budget) =>{
+                res.status(200).json({message: 'Budget Deleted'})
+            })
+            .catch((err) =>{
+                res.status(500).json({message: 'Server Error'})
+            })
         }
         else {
             res.status(401).json({message: 'Unauthorized'})
