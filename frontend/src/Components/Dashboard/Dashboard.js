@@ -8,10 +8,11 @@ import { Chart } from 'chart.js/auto';
 // import Chart from '../Chart/Chart';
 
 function Dashboard() {
-    const { expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, getPayments, getBudgets } = useGlobalContext()
+    const { logged, setActive, expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, getPayments, getBudgets } = useGlobalContext()
     const [dashBoardChart, setDashBoardChart] = useState(null);
     
     useEffect(() => {
+        if(!logged) setActive(7);
         getExpenses();
         getPayments();
         getBudgets();

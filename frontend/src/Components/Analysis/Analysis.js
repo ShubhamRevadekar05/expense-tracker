@@ -5,7 +5,7 @@ import { InnerLayout } from '../../styles/Layouts';
 import { Chart } from 'chart.js/auto';
 
 function Analysis() {
-    const {expenses, payments, budgets, getTotalExpensesThisMonth, getNumberOfExpensesThisMonth, getCategories, getTotalMonthlyCategoryWiseExpense, getBudgetByCategory} = useGlobalContext()
+    const {logged, setActive, expenses, payments, budgets, getTotalExpensesThisMonth, getNumberOfExpensesThisMonth, getCategories, getTotalMonthlyCategoryWiseExpense, getBudgetByCategory} = useGlobalContext()
     const [categories, setCategories] = useState(getCategories());
     const [totalMonthlyCategoryWiseExpense, setTotalMonthlyCategoryWiseExpense] = useState(getTotalMonthlyCategoryWiseExpense());
     const [aCWChart, setACWChart] = useState(null);
@@ -13,7 +13,7 @@ function Analysis() {
     const [aBChart, setABChart] = useState(null);
 
     useEffect(() =>{
-        ;
+        if(!logged) setActive(7);
     }, []);
     useEffect(() => {
         if(aCWChart) aCWChart.destroy();

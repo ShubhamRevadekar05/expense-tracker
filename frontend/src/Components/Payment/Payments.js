@@ -6,9 +6,10 @@ import IncomeItem from '../IncomeItem/IncomeItem';
 import PaymentForm from './PaymentForm';
 
 function Payments() {
-    const {payments, getPayments, deletePayment} = useGlobalContext()
+    const {logged, setActive, payments, getPayments, deletePayment} = useGlobalContext()
 
     useEffect(() =>{
+        if(!logged) setActive(7);
         getPayments();
     }, [])
     return (

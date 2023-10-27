@@ -6,9 +6,10 @@ import IncomeItem from '../IncomeItem/IncomeItem';
 import ExpenseForm from './ExpenseForm';
 
 function Expenses() {
-    const {expenses, getExpenses, deleteExpense, getTotalExpensesThisMonth} = useGlobalContext()
+    const {logged, setActive, expenses, getExpenses, deleteExpense, getTotalExpensesThisMonth} = useGlobalContext()
 
     useEffect(() =>{
+        if(!logged) setActive(7);
         getExpenses();
     }, [])
     return (
