@@ -119,28 +119,20 @@ exports.makePayment = async (req, res) =>{
             let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
             if(user) {
                 const {id} = req.params;
-                const {title, amount, category, description, date}  = req.body
                 const payment = await PaymentSchema.findById(id).exec();
                 if(payment) {
                     const expense = ExpenseModel({
-                        title,
-                        amount,
-                        category,
-                        description,
+                        title: payment.title,
+                        amount: payment.amount,
+                        category: payment.category,
+                        description: payment.description,
                         type: "payment",
-                        date,
+                        date: new Date(),
                         userId: user.id,
                         paymentId: id
                     });
                     await PaymentSchema.findByIdAndUpdate(payment.id, {dueDate: new Date(payment.dueDate.setMonth(payment.dueDate.getMonth()+1))}).exec();
                     try {
-                        //validations
-                        if(!title || !category || !description || !date){
-                            return res.status(400).json({message: 'All fields are required!'})
-                        }
-                        if(amount <= 0 || !amount === 'number'){
-                            return res.status(400).json({message: 'Amount must be a positive number!'})
-                        }
                         await expense.save()
                         res.status(200).json({message: 'Expense Added'})
                     } catch (error) {
