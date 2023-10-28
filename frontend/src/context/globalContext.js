@@ -179,6 +179,7 @@ export const GlobalProvider = ({children}) => {
             localStorage.setItem("email", response.data["email"]);
             localStorage.setItem("token", response.data["token"]);
             setActive(1);
+            setError("");
         }
     }
 
