@@ -1,11 +1,13 @@
 const ExpenseSchema = require("../models/ExpenseModel");
+const path = require("path");
+const fs = require("fs");
 const UserSchema = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../app");
 
 
 exports.addExpense = async (req, res) => {
-    const {title, amount, category, description, date}  = req.body
+    const {title, amount, category, description, date, receipt}  = req.body
     if(req.headers["authorization"]) {
         try {
             var userDetails = jwt.verify(req.headers["authorization"].split("Bearer ")[1], SECRET_KEY);
@@ -16,12 +18,20 @@ exports.addExpense = async (req, res) => {
         }
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
+            if(receipt) {
+                receipt.name = Math.random().toString(36).substring(2,7) + receipt.name;
+                fs.writeFile(path.dirname(__dirname) + "/uploads/" + receipt.name, receipt.data.split(';base64,').pop(), {
+                    flag: "w",
+                    encoding: "base64"
+                }, function(err) {;});
+            }
             const expense = ExpenseSchema({
                 title,
                 amount,
                 category,
                 description,
                 date,
+                receipt: receipt?.name,
                 userId: user.id
             })
         
@@ -46,7 +56,6 @@ exports.addExpense = async (req, res) => {
     else {
         res.status(401).json({message: 'Unauthorized'})
     }
-
 }
 
 exports.getExpense = async (req, res) =>{

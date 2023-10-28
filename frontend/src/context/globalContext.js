@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react"
+import {NotificationManager} from 'react-notifications';
 import axios from 'axios'
 
 const BASE_URL = "http://localhost:8080/api/";
@@ -12,19 +13,22 @@ export const GlobalProvider = ({children}) => {
     const [expenses, setExpenses] = useState([]);
     const [payments, setPayments] = useState([]);
     const [budgets, setBudgets] = useState([]);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
 
     const addExpense = async (expense) => {
         if(expense.category === "Other") expense.category = expense.otherCategory;
         await axios.post(`${BASE_URL}add-expense`, expense, {
             headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
+                Authorization: "Bearer " + localStorage.getItem("token"),
             }
+        }).then(res => {
+            NotificationManager.success("", "Expense Added")
         })
         .catch((err) =>{
             setError(err.response.data.message)
         })
-        getExpenses()
+        getExpenses();
+        checkBudget(expense.category, expense.amount);
     }
 
     const getExpenses = async () => {
@@ -42,6 +46,8 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            NotificationManager.error("", "Expense Deleted")
         })
         .catch((err) =>{
             setError(err.response.data.message)
@@ -55,6 +61,8 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            NotificationManager.success("", "Payment Added")
         })
         .catch((err) =>{
             setError(err.response.data.message)
@@ -77,6 +85,20 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            NotificationManager.error("", "Payment Deleted")
+        })
+        .catch((err) =>{
+            setError(err.response.data.message)
+        })
+        getPayments()
+    }
+
+    const makePayment = async (id) => {
+        await axios.post(`${BASE_URL}make-payment/${id}`, {}, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
         })
         .catch((err) =>{
             setError(err.response.data.message)
@@ -90,11 +112,13 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            NotificationManager.success("", "Budget Added")
         })
         .catch((err) =>{
             setError(err.response.data.message)
         })
-        getBudgets()
+        getBudgets();
     }
 
     const getBudgets = async () => {
@@ -112,11 +136,27 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            NotificationManager.error("", "Budget Deleted")
         })
         .catch((err) =>{
             setError(err.response.data.message)
         })
-        getBudgets()
+        getBudgets();
+    }
+
+    const totalBudget = () => {
+        let overallBudget = budgets.find(element => element.category === "Overall");
+        if(overallBudget) {
+            return overallBudget.amount;
+        }
+        else {
+            let totalBudget = 0;
+            budgets.forEach(element => {
+                if(element => element.category !== "Overall") totalBudget += element.amount;
+            });
+            return totalBudget;
+        }
     }
 
     const register = async (userDetails) => {
@@ -187,8 +227,13 @@ export const GlobalProvider = ({children}) => {
         return totalYearsExpenses;
     }
 
+    const getPredefinedCategories = () => {
+        let categories = ["Education", "Electricity", "Groceries", "Insurance", "Medicine", "Rent", "Transportation"];
+        return categories;
+    }
+
     const getCategories = () => {
-        let categories = ["Education", "Electricity", "Groceries", "Insurance", "Medicine", "Rent", "Transportation"]
+        let categories = getPredefinedCategories();
         let expensesThisMonth = expenses.filter(element => {
             let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             return new Date(element.date) >= date1
@@ -204,7 +249,7 @@ export const GlobalProvider = ({children}) => {
             }
         });
         budgets.forEach(element => {
-            if(!categories.includes(element.category)) {
+            if(!categories.includes(element.category) && element.category !== "Overall") {
                 categories.push(element.category);
             }
         });
@@ -240,19 +285,22 @@ export const GlobalProvider = ({children}) => {
             category,
             amount: 0
         }
-        if(category === 'Overall') {
-            budgets.forEach(element => {
-                budget.amount += element.amount;
-            });
-        }
-        else {
-            budgets.filter(element => element.category === category).forEach(element => {
-                budget.amount += element.amount;
-            });
-        }
+        budgets.filter(element => element.category === category).forEach(element => {
+            budget.amount += element.amount;
+        });
         return budget;
     }
 
+    const checkBudget = (category, amount) => {
+        let categories = getCategories();
+        let budget = getBudgetByCategory(category);
+        let totalMonthlyCategoryWiseExpense = getTotalMonthlyCategoryWiseExpense();
+        let totalExpenseByCategory = category !== "Overall" ? totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === category)] : getTotalExpensesThisMonth();
+        let amountDiff =  budget.amount - (parseInt(totalExpenseByCategory)+parseInt(amount));
+        if(amountDiff < 1) {
+            NotificationManager.warning("", `Budget for category ${category} is exceeding by ${Math.abs(amountDiff)}`);
+        }
+    }
 
     return (
         <GlobalContext.Provider value={{
@@ -268,10 +316,12 @@ export const GlobalProvider = ({children}) => {
             addPayment,
             getPayments,
             deletePayment,
+            makePayment,
             budgets,
             addBudget,
             getBudgets,
             deleteBudget,
+            totalBudget,
             register,
             login,
             error,
@@ -280,9 +330,11 @@ export const GlobalProvider = ({children}) => {
             getTotalExpensesThisMonth,
             getNumberOfExpensesThisMonth,
             getTotalYearlyMonthWiseExpense,
+            getPredefinedCategories,
             getCategories,
             getTotalMonthlyCategoryWiseExpense,
-            getBudgetByCategory
+            getBudgetByCategory,
+            checkBudget
         }}>
             {children}
         </GlobalContext.Provider>

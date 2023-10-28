@@ -21,22 +21,48 @@ function ExpenseForm() {
   const { title, amount, date, receipt, category, description, otherCategory } =
     inputState;
 
-  const handleInput = (name) => (e) => {
-    setInputState({ ...inputState, [name]: e.target.value });
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleInput = (name) =>  async (e) => {
+    if (name === "receipt") {
+      setInputState({ ...inputState, [name]: e.target.files[0]});
+    }
+    else setInputState({ ...inputState, [name]: e.target.value });
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addExpense(inputState);
+    addExpense({
+      title,
+      amount,
+      date,
+      category,
+      description,
+      receipt: receipt ? {name: receipt.name, data: await convertBase64(receipt)} : ""
+    });
     setInputState({
       title: "",
       amount: "",
       date: "",
-      receipt: "",
       category: "",
       description: "",
+      receipt: ""
     });
+    e.target.reset();
   };
 
   return (
@@ -49,6 +75,7 @@ function ExpenseForm() {
           name={"title"}
           placeholder='Expense Title'
           onChange={handleInput("title")}
+          required
         />
       </div>
       <div className='input-control'>
@@ -58,6 +85,7 @@ function ExpenseForm() {
           name={"amount"}
           placeholder={"Expense Amount"}
           onChange={handleInput("amount")}
+          required
         />
       </div>
       <div className='input-control'>
@@ -69,13 +97,13 @@ function ExpenseForm() {
           onChange={(date) => {
             setInputState({ ...inputState, date: date });
           }}
+          required
         />
       </div>
       <div className='row'>
         <label className="m-1" htmlFor='receipt'>Attach Receipt</label>
         <div className='input-control col'>
           <input
-            value={receipt}
             type='file'
             name={"receipt"}
             placeholder={"Attach Receipt"}
@@ -111,6 +139,7 @@ function ExpenseForm() {
               name={"category"}
               placeholder='Other Category'
               onChange={handleInput("otherCategory")}
+              required
             />
           </div>
         )}
