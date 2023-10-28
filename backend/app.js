@@ -13,6 +13,7 @@ exports.SECRET_KEY = "abcdefghijklmnopqrstuvwxyz";
 //middlewares
 app.use(express.json())
 app.use(cors())
+app.use('/static', express.static('uploads'))
 
 //routes
 readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route)))

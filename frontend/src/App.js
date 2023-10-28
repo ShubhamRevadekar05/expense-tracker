@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useEffect} from 'react'
 import styled from "styled-components";
 import bg from './img/bg.png'
 import {MainLayout} from './styles/Layouts'
@@ -12,6 +12,9 @@ import Analysis from './Components/Analysis/Analysis';
 import { useGlobalContext } from './context/globalContext';
 import Register from './Components/LR/Register';
 import Login from './Components/LR/Login';
+import 'react-notifications/dist/react-notifications.css';
+import {NotificationContainer} from 'react-notifications';
+
 function App() {
   const {active} = useGlobalContext();
   
@@ -41,6 +44,7 @@ function App() {
   },[])
 
   return (
+    <>
     <AppStyled bg={bg} className="App">
       {orbMemo}
       <MainLayout>
@@ -49,7 +53,10 @@ function App() {
           {displayData()}
         </main>
       </MainLayout>
+      <NotificationContainer />
     </AppStyled>
+   
+    </>
   );
 }
 

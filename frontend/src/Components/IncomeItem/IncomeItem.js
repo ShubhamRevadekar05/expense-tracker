@@ -33,6 +33,7 @@ function IncomeItem({
   category,
   description,
   deleteItem,
+  makePayment,
   indicatorColor,
   type,
 }) {
@@ -92,7 +93,7 @@ function IncomeItem({
         <div className='inner-content'>
           <div className='text'>
             <p>
-              {dollar} {amount}
+              {amount}
             </p>
             <p>
               {calender} {dateFormat(date)}
@@ -104,7 +105,9 @@ function IncomeItem({
           </div>
 
           <div className='row'>
-            <div className='btn-con col'>
+            {type === 'payment' ?
+            <>
+              <div className='btn-con col'>
               <Button
                 icon={tick}
                 bPad={"1rem"}
@@ -113,9 +116,12 @@ function IncomeItem({
                 color={"#fff"}
                 iColor={"#fff"}
                 hColor={"var(--color-green)"}
-                onClick={() => deleteItem(id)}
+                onClick={() => makePayment(id)}
               />
             </div>
+            </> :
+            <>
+            </>}
             <div className='btn-con col'>
               <Button
                 icon={trash}

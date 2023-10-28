@@ -6,7 +6,7 @@ import IncomeItem from '../IncomeItem/IncomeItem';
 import PaymentForm from './PaymentForm';
 
 function Payments() {
-    const {logged, setActive, payments, getPayments, deletePayment} = useGlobalContext()
+    const {logged, setActive, payments, getPayments, deletePayment, makePayment} = useGlobalContext()
 
     useEffect(() =>{
         if(!logged) setActive(7);
@@ -22,17 +22,19 @@ function Payments() {
                     </div>
                     <div className="incomes">
                         {payments.map((payment) => {
-                            const {_id, title, amount, date, category, description} = payment;
+                            const {_id, title, amount, dueDate, category, description} = payment;
                             return <IncomeItem
                                 key={_id}
                                 id={_id} 
                                 title={title} 
                                 description={description} 
                                 amount={amount} 
-                                date={date} 
+                                date={dueDate} 
                                 category={category} 
                                 indicatorColor="var(--color-green)"
                                 deleteItem={deletePayment}
+                                makePayment={makePayment}
+                                type={"payment"}
                             />
                         })}
                     </div>

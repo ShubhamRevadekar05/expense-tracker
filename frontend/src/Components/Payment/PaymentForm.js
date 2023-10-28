@@ -72,7 +72,7 @@ function PaymentForm() {
         />
       </div>
       <div className='row'>
-        <label className='m-1' htmlFor='payReceipt'>
+        {/* <label className='m-1' htmlFor='payReceipt'>
           Attach Receipt
         </label>
         <div className='input-control col'>
@@ -83,7 +83,7 @@ function PaymentForm() {
             placeholder={"Attach Receipt"}
             onChange={handleInput("payReceipt")}
           />
-        </div>
+        </div> */}
         <div className='selects input-control col'>
           <select
             required
@@ -113,6 +113,7 @@ function PaymentForm() {
               name={"category"}
               placeholder='Other Category'
               onChange={handleInput("otherCategory")}
+              required
             />
           </div>
         )}

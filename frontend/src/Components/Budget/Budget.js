@@ -4,14 +4,49 @@ import { useGlobalContext } from "../../context/globalContext";
 import { InnerLayout } from "../../styles/Layouts";
 
 function Budget() {
-  const { addBudget, error, setError } = useGlobalContext();
+  const { budgets, addBudget, getBudgets, deleteBudget, totalBudget, error, setError } = useGlobalContext();
   const [inputState, setInputState] = useState({
     amount: "",
-    date: "",
-    category: "",
+    category: "Overall",
   });
 
-  const { category, otherCategory } = inputState;
+  const { amount, category, otherCategory } = inputState;
+
+  const [isOn, setIsOn] = useState(false); // Declare isOn state variable here
+
+  const [thisBudget, setThisBudget] = useState(null);
+
+  useEffect(() => {
+    getBudgets();
+    document.getElementById("add-budget-button").hidden = true
+    document.getElementById("delete-budget-button").hidden = true;
+  }, []);
+  
+  useEffect(() => {
+    let budget = budgets.find(element => element.category === category);
+    if(budget) {
+      setThisBudget(budget);
+      setIsOn(true);
+      setInputState({
+        amount: budget.amount,
+        category: category
+      });
+      document.getElementById("delete-budget-button").hidden = false;
+    }
+    else {
+      setIsOn(false);
+      setInputState({
+        amount: "",
+        category: category
+      });
+      document.getElementById("delete-budget-button").hidden = true;
+    }
+  }, [budgets, category]);
+
+  useEffect(() => {
+    if(isOn) document.getElementById("add-budget-button").hidden = false;
+    else document.getElementById("add-budget-button").hidden = true;
+  }, [isOn]);
 
   const handleInput = (name) => (e) => {
     setInputState({ ...inputState, [name]: e.target.value });
@@ -23,13 +58,9 @@ function Budget() {
     addBudget(inputState);
     setInputState({
       amount: "",
-      category: "",
+      category: "Overall",
     });
   };
-
-  const [isOn, setIsOn] = useState(false); // Declare isOn state variable here
-
-  useEffect(() => {}, []);
 
   const handleToggle = (e) => {
     e.preventDefault();
@@ -41,10 +72,10 @@ function Budget() {
       <InnerLayout>
         <h1>Budget</h1>
         <h2 className='total-income'>
-          Total Budget: <span>${5000}</span>
+          Total Budget: <span>{totalBudget()}</span>
         </h2>
         <div className='income-content'>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <div className='form-container'>
               <div className='salar-item'>
                 <div className='selects input-control'>
@@ -55,18 +86,17 @@ function Budget() {
                     id='category'
                     onChange={handleInput("category")}
                   >
-                    <option value='' disabled>
-                      Select Option
+                    <option value='Overall'>
+                      Overall
                     </option>
-                    <option value='education'>Education</option>
+                    <option value='Education'>Education</option>
                     <option value='Electricity'>Electricity</option>
                     <option value='Groceries'>Groceries</option>
                     <option value='Insurance'>Insurance</option>
                     <option value='Medicine'>Medicine</option>
                     <option value='Rent'>Rent</option>
-                    <option value='transportation'>Transportation</option>
-                    <option value='transportation'>Transportation</option>
-                    <option value='other'>Other</option>
+                    <option value='Transportation'>Transportation</option>
+                    <option value='Other'>Other</option>
                   </select>
                 </div>
 
@@ -78,6 +108,7 @@ function Budget() {
                       name={"category"}
                       placeholder='Other Category'
                       onChange={handleInput("otherCategory")}
+                      required
                     />
                   </div>
                 )}
@@ -85,7 +116,7 @@ function Budget() {
               <Background isOn={isOn}>
                 <div className='input-control'>
                   <div className='card-buget'>
-                    <input type='number' placeholder='Amount'></input>
+                    <input type='number' placeholder='Amount' value={amount} name={"amount"}  onChange={handleInput("amount")} required ></input>
 
                     <button
                       id='on'
@@ -96,12 +127,12 @@ function Budget() {
                     </button>
                   </div>
                   <div className='submit-btn'>
-                    <button className='Add-Budget'>
-                      <i class='fa fa-plus'></i>&nbsp;&nbsp;Add Budget
+                    <button className='Add-Budget' onClick={handleSubmit} id="add-budget-button">
+                      <i className='fa fa-plus'></i>&nbsp;&nbsp;Add Budget
                     </button>{" "}
                     &nbsp;&nbsp;&nbsp;
-                    <button className='Delete'>
-                      <i class='fa fa-trash'></i>&nbsp;&nbsp;Delete
+                    <button className='Delete' id="delete-budget-button" onClick={(e) => {e.preventDefault(); deleteBudget(thisBudget._id);}} >
+                      <i className='fa fa-trash'></i>&nbsp;&nbsp;Delete
                     </button>
                   </div>
                 </div>

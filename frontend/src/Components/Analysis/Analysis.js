@@ -3,11 +3,13 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
 import { Chart } from 'chart.js/auto';
+import History from '../../History/History';
 
 function Analysis() {
     const {logged, setActive, expenses, payments, budgets, getTotalExpensesThisMonth, getNumberOfExpensesThisMonth, getCategories, getTotalMonthlyCategoryWiseExpense, getBudgetByCategory} = useGlobalContext()
     const [categories, setCategories] = useState(getCategories());
     const [totalMonthlyCategoryWiseExpense, setTotalMonthlyCategoryWiseExpense] = useState(getTotalMonthlyCategoryWiseExpense());
+    const [exceedingBudgets, setExceedingBudgets] = useState([]);
     const [aCWChart, setACWChart] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("Overall");
     const [aBChart, setABChart] = useState(null);
@@ -16,6 +18,7 @@ function Analysis() {
         if(!logged) setActive(7);
     }, []);
     useEffect(() => {
+        //Plotting Monthly Analysis Chart
         if(aCWChart) aCWChart.destroy();
         setACWChart(new Chart(document.getElementById("aCWChart"), {
             type: 'doughnut',
@@ -45,12 +48,21 @@ function Analysis() {
         }).map(item => item.amount))
         document.getElementById("minExpense").innerText = min === Infinity ? 0 : min;
         document.getElementById("maxExpense").innerHTML = max === -Infinity ? 0 : max;
+
+        //Calculate Exceeding Budgets
+        setExceedingBudgets(budgets.map(element => {
+            let category = element.category;
+            let budget = getBudgetByCategory(element.category);
+            let totalExpenseByCategory = category !== "Overall" ? totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === category)] : getTotalExpensesThisMonth();
+            return budget.amount ? {title: element.category, amount: budget.amount - totalExpenseByCategory} : {title: element.category, amount: 0};
+        }).filter(element => element.amount < 0));
     }, [expenses, payments, budgets]);
 
     useEffect(() => {
+        //Plotting Budget Analysis Chart
         if(aBChart) aBChart.destroy();
         let budget = getBudgetByCategory(selectedCategory);
-        let totalExpenseByCategory = totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === selectedCategory)];
+        let totalExpenseByCategory = selectedCategory !== "Overall" ? totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === selectedCategory)] : getTotalExpensesThisMonth();
         setABChart(new Chart(document.getElementById("aBChart"), {
             type: "bar",
             data: {
@@ -59,8 +71,8 @@ function Analysis() {
                     label: "Used",
                     data: [totalExpenseByCategory]
                 },{
-                    label: "Un-used",
-                    data: [budget.amount - totalExpenseByCategory]
+                    label: budget.amount - totalExpenseByCategory < 0 ? "Exceed" : "Un-used",
+                    data: [budget.amount ? budget.amount - totalExpenseByCategory : 0]
                 }]
             },
             options: {
@@ -69,7 +81,16 @@ function Analysis() {
                         display: true,
                         text: "Category-wise Budget Distribution"
                     }
-                }
+                },
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                  }
             }
         }));
     }, [selectedCategory]);
@@ -111,7 +132,13 @@ function Analysis() {
                     <div className="chart-con">
                         <canvas id="aBChart" width="40%" height="30%" />
                     </div>
-                    
+                    <div className="history-con">
+                        {exceedingBudgets.length ?
+                            <History title={"Exceeding Budgets"} list={exceedingBudgets} budgetStyled={true} />
+                        :
+                            <h2>Budget looks Good!</h2>
+                        }
+                    </div>
                 </div>
             </InnerLayout>
         </AnalysisStyled>

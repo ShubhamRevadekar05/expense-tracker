@@ -4,11 +4,13 @@ import { useGlobalContext } from '../../context/globalContext';
 import History from '../../History/History';
 import { InnerLayout } from '../../styles/Layouts';
 import { Chart } from 'chart.js/auto';
+import {NotificationManager} from 'react-notifications';
+import { dateFormat } from "../../utils/dateFormat";
 
 // import Chart from '../Chart/Chart';
 
 function Dashboard() {
-    const { logged, setActive, expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, getPayments, getBudgets } = useGlobalContext()
+    const { logged, setActive, expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, payments, getPayments, getBudgets } = useGlobalContext()
     const [dashBoardChart, setDashBoardChart] = useState(null);
     
     useEffect(() => {
@@ -17,6 +19,17 @@ function Dashboard() {
         getPayments();
         getBudgets();
     }, []);
+
+    useEffect(() => {
+        let paymentReminder = setInterval(() => {
+          payments.forEach(element => {
+              if(new Date(element.dueDate) <= new Date()) {
+                  NotificationManager.warning("", `Your payment ${element.title} is due on ${dateFormat(element.dueDate)}`);
+              }
+          });
+        }, [10000])
+        return () => clearInterval(paymentReminder);
+      }, [payments]);
 
     useEffect(() => {
         if(dashBoardChart) dashBoardChart.destroy();
@@ -69,7 +82,7 @@ function Dashboard() {
                         </div>
                     </div>
                     <div className="history-con">
-                        <History />
+                        <History title={"Recent History"} list={expenses.slice(0, 3)} />
                         <h2 className="salary-title">Min<span>Expenses</span>Max</h2>
                         <div className="salary-item">
                             <p id="minExpense"></p>
