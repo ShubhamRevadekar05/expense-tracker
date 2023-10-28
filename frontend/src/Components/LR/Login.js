@@ -4,8 +4,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useGlobalContext } from '../../context/globalContext';
 
 const Background = styled.div`
-  width: 430px;
-  height: 520px;
+  width: 100%;
+  height: 20%;
   position: absolute;
   transform: translate(-50%, -50%);
   left: 50%;
@@ -13,8 +13,9 @@ const Background = styled.div`
 `;
 
 const Form = styled.form`
-  height: 520px;
-  width: 400px;
+  height: 30rem;
+  width: 30rem;
+  max-width: 25rem; /* Set a maximum width for larger screens */
   background-color: rgba(255, 255, 255, 0.13);
   position: absolute;
   transform: translate(-50%, -50%);
@@ -24,8 +25,12 @@ const Form = styled.form`
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-  padding: 50px 35px;
-`;
+  padding: 2rem; /* Adjust padding for smaller screens */
+  
+  @media screen and (max-width: 600px, max-height:700px) {
+    max-height: 30rem;
+    max-width: 90%; /* Adjust the maximum width for smaller screens */
+  }`;
 
 /* const FormElement = styled.div`
   font-family: 'Poppins', sans-serif;
@@ -36,41 +41,50 @@ const Form = styled.form`
 `; */
 
 const FormHeading = styled.h3`
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 42px;
+  font-size: 2rem;
+  line-height: 3rem;
   text-align: center;
 `;
 
 const Label = styled.label`
   display: block;
-  margin-top: 30px;
-  font-size: 16px;
-  font-weight: 500;
+  margin-top: 1rem; /* Adjust margin for smaller screens */
+  font-size: 1rem;
+    @media screen and (max-width: 600px) {
+      margin-top: 1rem;
+      font-size: 1rem;
+      }
 `;
 
 const Input = styled.input`
   display: block;
-  height: 50px;
+  height: 3rem;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.07);
   border-radius: 3px;
-  padding: 0 10px;
-  margin-top: 8px;
-  font-size: 14px;
+  padding: 0.5rem; /* Adjust padding for smaller screens */
+  margin-top: 1rem;
+  font-size: 1rem;
   font-weight: 300;
+    @media screen and (max-width: 600px) {
+      max-width: 100%;
+      margin-top: 1rem;
+      }
 `;
 
+
 const Button = styled.button`
-  margin-top: 50px;
+  margin-top: 2rem; /* Adjust margin for smaller screens */
   width: 100%;
   background-color: #ffffff;
   color: #080710;
-  padding: 15px 0;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 1.2rem; /* Adjust padding for smaller screens */
+  font-size: 1.2rem;
   border-radius: 5px;
   cursor: pointer;
+    @media screen and (max-width: 600px) {
+      max-width: 100%;
+      }
 `;
 
 const Login = () => {

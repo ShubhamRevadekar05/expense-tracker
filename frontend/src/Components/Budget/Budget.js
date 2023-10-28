@@ -72,7 +72,7 @@ function Budget() {
       <InnerLayout>
         <h1>Budget</h1>
         <h2 className='total-income'>
-          Total Budget: <span>{totalBudget()}</span>
+          Total Budget: <span>₹{totalBudget()}</span>
         </h2>
         <div className='income-content'>
           <Form onSubmit={handleSubmit}>
@@ -113,10 +113,10 @@ function Budget() {
                   </div>
                 )}
               </div>
-              <Background isOn={isOn}>
-                <div className='input-control'>
+              
+               
                   <div className='card-buget'>
-                    <input type='number' placeholder='Amount' value={amount} name={"amount"}  onChange={handleInput("amount")} required ></input>
+                    
 
                     <button
                       id='on'
@@ -124,7 +124,8 @@ function Budget() {
                       onClick={handleToggle}
                     >
                       {isOn ? "On" : "Off"}
-                    </button>
+                    </button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type='number' placeholder='Amount' value={amount} name={"amount"}  onChange={handleInput("amount")} required ></input>
                   </div>
                   <div className='submit-btn'>
                     <button className='Add-Budget' onClick={handleSubmit} id="add-budget-button">
@@ -135,8 +136,8 @@ function Budget() {
                       <i className='fa fa-trash'></i>&nbsp;&nbsp;Delete
                     </button>
                   </div>
-                </div>
-              </Background>
+               
+              
             </div>
           </Form>
         </div>
@@ -152,8 +153,8 @@ const IncomeStyled = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #fcf6f9;
-    border: 2px solid #ffffff;
+    background: #FCF6F9;
+    border: 2px solid #FFFFFF;
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
     border-radius: 20px;
     padding: 1rem;
@@ -173,6 +174,10 @@ const IncomeStyled = styled.div`
       flex: 1;
     }
   }
+  @media screen and (max-width: 768px) {
+    margin: 2rem auto; /* Centering the form horizontally */
+    width: 90%; /* Adjusted width for smaller screens */
+  }
 `;
 
 const Form = styled.form`
@@ -187,7 +192,7 @@ const Form = styled.form`
     outline: none;
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 5px;
+    border-radius: 5px; /* Adjusted the border-radius */
     border: 2px solid #fff;
     background: transparent;
     resize: none;
@@ -203,12 +208,13 @@ const Form = styled.form`
     }
   }
 
-  .selects {
-    width: 150%;
+ .selects {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     select {
-      width: 150%;
+      margin-top:5%;
+      width: 100%;
       color: rgba(34, 34, 96, 0.4);
       &:focus,
       &:active {
@@ -216,31 +222,21 @@ const Form = styled.form`
       }
     }
   }
-`;
+  @media screen and (max-width: 768px) {
+   /*  margin: 2rem auto; Centering the form horizontally */
+    width: 90%; /* Adjusted width for smaller screens */
+  }
 
-const Background = styled.form`
-  height: 300px;
-  width: 60%;
-  background-color: rgba(255, 255, 255, 0.13);
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 44%;
-  left: 60%;
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  border-radius: 5px;
-  border: 2px solid #fff;
-  box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-  padding: 50px 35px;
-  .input-control {
+.input-control {
     input {
-      width: 60%;
+      width: 30rem;
     }
   }
-  .input-control {
+  .card-buget {
     .on {
-      width: 10%;
-      margin-left: 5%;
+margin-top:10%;
+      width: 20%;
+      margin-left: 1rem;
       outline: none;
       border: none;
       font-family: inherit;
@@ -257,8 +253,9 @@ const Background = styled.form`
       background-color: var(--color-green);
     }
     .off {
-      width: 10%;
-      margin-left: 5%;
+      margin-top:10%;
+      width: 20%;
+      margin-left: 1rem;
       outline: none;
       border: none;
       font-family: inherit;
@@ -276,9 +273,8 @@ const Background = styled.form`
   }
 
   button.Add-Budget {
-    margin-top: 5%;
-    margin-left: 0%;
-    width: 35%;
+    margin-top:10%;
+    width: 50%;
     outline: none;
     border: none;
     font-family: inherit;
@@ -295,8 +291,7 @@ const Background = styled.form`
     color: white;
   }
   button.Delete {
-    margin-top: 5%;
-    width: 25%;
+    width: 45%;
     outline: none;
     border: none;
     font-family: inherit;
@@ -312,6 +307,11 @@ const Background = styled.form`
     border: 2px solid #fff;
     color: white;
     text-align: center;
+  }
+   @media screen and (max-width: 768px) {
+    margin: 2rem auto; /* Centering the form horizontally */
+    width: 90%; /* Adjusted width for smaller screens */
+    margin-left: 50%;
   }
 `;
 

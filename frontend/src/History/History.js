@@ -14,7 +14,7 @@ function History({title, list, budgetStyled}) {
                         </p>
 
                         <p>
-                            {amount}
+                           ₹ {amount}
                         </p>
                     </div>
                 )

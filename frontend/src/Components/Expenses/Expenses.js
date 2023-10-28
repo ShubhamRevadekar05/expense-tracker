@@ -16,7 +16,7 @@ function Expenses() {
         <ExpenseStyled>
             <InnerLayout>
                 <h1>Expenses</h1>
-                <h2 className="total-income">Total Expense: <span>${getTotalExpensesThisMonth()}</span></h2>
+                <h2 className="total-income">Total Expense: <span>₹{getTotalExpensesThisMonth()}</span></h2>
                 <div className="income-content">
                     <div className="form-container">
                         <ExpenseForm />
@@ -29,7 +29,7 @@ function Expenses() {
                                 id={_id} 
                                 title={title} 
                                 description={description} 
-                                amount={amount} 
+                                amount={`₹${amount}`} 
                                 date={date} 
                                 type={"expense"}
                                 category={category} 

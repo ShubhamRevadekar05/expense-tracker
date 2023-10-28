@@ -46,8 +46,8 @@ function Analysis() {
             let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             return new Date(element.date) >= date1
         }).map(item => item.amount))
-        document.getElementById("minExpense").innerText = min === Infinity ? 0 : min;
-        document.getElementById("maxExpense").innerHTML = max === -Infinity ? 0 : max;
+        document.getElementById( "minExpense").innerText = `₹ ${min === Infinity ? 0 : min}`;
+        document.getElementById("maxExpense").innerHTML = `₹ ${max === -Infinity ? 0 : max}`;
 
         //Calculate Exceeding Budgets
         setExceedingBudgets(budgets.map(element => {
@@ -106,12 +106,12 @@ function Analysis() {
                     <div className="history-con">
                         <h2 className="salary-title">Min<span>Expenses</span>Max</h2>
                         <div className="salary-item">
-                            <p id="minExpense"></p>
-                            <p id="maxExpense"></p>
+                            <p id="minExpense">&#8377;</p>
+                            <p id="maxExpense">₹ </p>
                         </div>
                         <h2 className="salary-title">Total Expenses<span></span>Number of Transactions</h2>
                         <div className="salary-item">
-                            <p>{getTotalExpensesThisMonth()}</p>
+                            <p>₹{getTotalExpensesThisMonth()}</p>
                             <p>{getNumberOfExpensesThisMonth()}</p>
                         </div>
                     </div>
@@ -138,6 +138,7 @@ function Analysis() {
                         :
                             <h2>Budget looks Good!</h2>
                         }
+
                     </div>
                 </div>
             </InnerLayout>

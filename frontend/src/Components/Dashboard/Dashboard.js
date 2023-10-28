@@ -60,8 +60,8 @@ function Dashboard() {
             let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             return new Date(element.date) >= date1
         }).map(item => item.amount))
-        document.getElementById("minExpense").innerText = min === Infinity ? 0 : min;
-        document.getElementById("maxExpense").innerHTML = max === -Infinity ? 0 : max;
+        document.getElementById("minExpense").innerText = `₹ ${min === Infinity ? 0 : min}`;
+        document.getElementById("maxExpense").innerHTML = `₹ ${max === -Infinity ? 0 : max}`;
     }, [expenses]);
 
     return (
@@ -76,13 +76,13 @@ function Dashboard() {
                             <div className="expense">
                                 <h2>Total Expense</h2>
                                 <p>
-                                    {getTotalExpensesThisMonth()}
+                                    ₹{getTotalExpensesThisMonth()}
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div className="history-con">
-                        <History title={"Recent History"} list={expenses.slice(0, 3)} />
+                        <History title={"Recent History"} list={expenses.slice(0, 3)}/>
                         <h2 className="salary-title">Min<span>Expenses</span>Max</h2>
                         <div className="salary-item">
                             <p id="minExpense"></p>
