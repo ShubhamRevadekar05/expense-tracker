@@ -89,7 +89,7 @@ exports.deletePayment = async (req, res) =>{
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;
-            PaymentSchema.findByIdAndDelete(id).exec()
+            PaymentSchema.findOneAndDelete({_id: id, userId: user.id}).exec()
                 .then((payment) =>{
                     res.status(200).json({message: 'Payment Deleted'})
                 })

@@ -19,7 +19,7 @@ exports.addBudget = async (req, res) => {
             
             try {
                 //validations
-                let budget = await BudgetSchema.findOne({category: category}).exec();
+                let budget = await BudgetSchema.findOne({category: category, userId: user.id}).exec();
                 let add = true;
                 if(budget) {
                     if(amount <= 0 || !amount === 'number'){
@@ -49,7 +49,7 @@ exports.addBudget = async (req, res) => {
                 budgets.forEach(element => {
                     if(element.category !== "Overall") overallBudgetAmount += element.amount;
                 });
-                let overallBudget = await BudgetSchema.findOne({category: "Overall"}).exec();
+                let overallBudget = await BudgetSchema.findOne({category: "Overall", userId: user.id}).exec();
                 if(overallBudget) {
                     let amountToSet = 0;
                     if(category === "Overall") {
@@ -120,7 +120,7 @@ exports.deleteBudget = async (req, res) =>{
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;
-            BudgetSchema.findByIdAndDelete(id).exec()
+            BudgetSchema.findOneAndDelete({_id: id, userId: user.id}).exec()
             .then((budget) =>{
                 res.status(200).json({message: 'Budget Deleted'})
             })

@@ -97,7 +97,7 @@ exports.deleteExpense = async (req, res) =>{
         let user = await UserSchema.findOne({username: userDetails.username, email: userDetails.email}).exec();
         if(user) {
             const {id} = req.params;
-            ExpenseSchema.findByIdAndDelete(id).exec()
+            ExpenseSchema.findOneAndDelete({_id: id, userId: user.id}).exec()
                 .then((expense) =>{
                     res.status(200).json({message: 'Expense Deleted'})
                 })
