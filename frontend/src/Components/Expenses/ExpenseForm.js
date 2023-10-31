@@ -102,7 +102,7 @@ function ExpenseForm() {
       </div>
       <div className='row'>
         <label className="m-1" htmlFor='receipt'>Attach Receipt</label>
-        <div className='input-control col'>
+        <div className='input-control-file col'>
           <input
             type='file'
             name={"receipt"}
@@ -110,7 +110,8 @@ function ExpenseForm() {
             onChange={handleInput("receipt")}
           />
         </div>
-        <div className='selects input-control col'>
+        <br></br>
+        <div className='selects input-control-select col'>
           <select
             required
             value={category}
@@ -174,6 +175,9 @@ const ExpenseFormStyled = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  @media screen and (max-width: 500px) {
+        width: auto;
+      }
   input,
   textarea,
   select {
@@ -188,6 +192,10 @@ const ExpenseFormStyled = styled.form`
     resize: none;
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
     color: rgba(34, 34, 96, 0.9);
+    @media screen and (max-width: 500px) {
+      padding: 0.5rem 0.5rem;
+      width:100%;
+    }
     &::placeholder {
       color: rgba(34, 34, 96, 0.4);
     }
@@ -195,14 +203,25 @@ const ExpenseFormStyled = styled.form`
   .input-control {
     input {
       width: 100%;
+      @media screen and (max-width: 500px) {
+        width: 100%;
+      }
     }
   }
 
   .selects {
     display: flex;
-    justify-content: flex-end;
+    @media screen and (max-width: 500px) {
+        width: auto;
+        
+      }
     select {
       color: rgba(34, 34, 96, 0.4);
+      @media screen and (max-width: 500px) {
+        width: auto;
+        
+      }
+      }
       &:focus,
       &:active {
         color: rgba(34, 34, 96, 1);
@@ -218,5 +237,19 @@ const ExpenseFormStyled = styled.form`
       }
     }
   }
+
+  .row{
+  display: flex;
+  flex-direction: row; /* Display horizontally by default */
+  @media screen and (max-width: 500px) {
+    flex-direction: column; /* Switch to vertical on smaller screens */
+}
+}
+  .input-control-file, .input-control-select{
+    flex:1;
+    margin-top:5%;
+  }
+
+
 `;
 export default ExpenseForm;

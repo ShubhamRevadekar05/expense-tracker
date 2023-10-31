@@ -21,7 +21,8 @@ export const GlobalStyle = createGlobalStyle`
     body{
         font-family: 'Nunito', sans-serif;
         font-size: clamp(1rem, 1.5vw, 1.2rem);
-        overflow: hidden;
+        overflow: auto;
+        min-height:100vh;
         color: rgba(34, 34, 96, .6);
     }
 

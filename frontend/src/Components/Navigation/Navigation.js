@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import avatar from '../../img/avatar.png'
-import { signout } from '../../utils/Icons'
+import { signout, login , register} from '../../utils/Icons'
 import { menuItems } from '../../utils/menuItems'
 import { useGlobalContext } from '../../context/globalContext';
 
@@ -11,6 +11,7 @@ function Navigation() {
 
     return (
         <NavStyled>
+            <div className='direction'>
             <div className="user-con">
                 <img src={avatar} alt="" />
                 <div className="text">
@@ -30,7 +31,8 @@ function Navigation() {
                     </li>
                 })}
             </ul>
-            <div className="bottom-nav menu-items">
+            <ul>
+            <div className=" menu-items">
                 {logged ?
                     <>
                         <li onClick={() => {localStorage.removeItem("logged"); setLogged(false); setActive(7)}}>
@@ -39,18 +41,15 @@ function Navigation() {
                     </> :
                     <>
                         <li onClick={() => setActive(6)} className={active === 6 ? 'active': ''}>
-                            {signout} Register
+                            {register} Register
                         </li>
                         <li onClick={() => setActive(7)} className={active === 7 ? 'active': ''}>
-                            {signout} Login
+                            {login} Login
                         </li>
                     </>
                 }
-                {/* <a href="../LR/Login">
-                <li>
-                    {Login} Login
-                </li>
-                </a> */}
+            </div>
+            </ul>
             </div>
         </NavStyled>
     )
@@ -58,16 +57,26 @@ function Navigation() {
 
 const NavStyled = styled.nav`
     padding: 2rem 1.5rem;
-    width: 374px;
-    height: 100%;
+    width: 20rem;
+    height: auto;
     background: rgba(252, 246, 249, 0.78);
     border: 3px solid #FFFFFF;
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
+
+    @media screen and (max-width: 500px) {
+    width: 100%;
+    height: auto;
+    overflow: auto;
+    padding: 1rem;
+  }
+
+    .direction{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
+    }
     .user-con{
         height: 100px;
         display: flex;
@@ -133,3 +142,4 @@ const NavStyled = styled.nav`
 `;
 
 export default Navigation
+
