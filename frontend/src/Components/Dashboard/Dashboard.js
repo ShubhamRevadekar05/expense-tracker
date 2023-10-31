@@ -7,8 +7,6 @@ import { Chart } from 'chart.js/auto';
 import {NotificationManager} from 'react-notifications';
 import { dateFormat } from "../../utils/dateFormat";
 
-// import Chart from '../Chart/Chart';
-
 function Dashboard() {
     const { logged, setActive, expenses, getExpenses, getTotalExpensesThisMonth, getTotalYearlyMonthWiseExpense, payments, getPayments, getBudgets } = useGlobalContext()
     const [dashBoardChart, setDashBoardChart] = useState(null);
@@ -52,7 +50,7 @@ function Dashboard() {
                 }
             }
         }));
-        let min = Math.min(...expenses.filter(element => {
+let min = Math.min(...expenses.filter(element => {
             let date1 = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             return new Date(element.date) >= date1
         }).map(item => item.amount));
@@ -72,19 +70,13 @@ function Dashboard() {
                 <div className="stats-con">
                     <div className="chart-con">
                         <canvas id="dashBoardChart" />
-                        <div className="amount-con">
-                            <div className="expense">
-                                <h2>Total Expense</h2>
-                                <p>
-                                    ₹{getTotalExpensesThisMonth()}
-                                </p>
-                            </div>
-                        </div>
+    
+                        <h2 className="total-expense">Total Expense: <span>₹{getTotalExpensesThisMonth()}</span></h2>
                     </div>
                     <div className="history-con">
                         <History title={"Recent History"} list={expenses.slice(0, 3)}/>
-                        <h2 className="salary-title">Min<span>Expenses</span>Max</h2>
-                        <div className="salary-item">
+                        <h2 className="expense-title">Min<span>Expenses</span>Max</h2>
+                        <div className="expense-item">
                             <p id="minExpense"></p>
                             <p id="maxExpense"></p>
                         </div>
@@ -96,63 +88,67 @@ function Dashboard() {
 }
 
 const DashboardStyled = styled.div`
-    .stats-con{
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
+    width:100%;
+    .stats-con {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 2rem;
-        .chart-con{
-            grid-column: 1 / 4;
-            height: 400px;
-            .amount-con{
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
+        @media screen and (max-width: 480px){
+             flex-direction: column;
+       }
+        
+        .chart-con {
+            flex: 1;
+           // height: 400px;
+            //width: 300px;
+            //flex-basis: 75%; /* Adjust as needed */
+                -webkit-flex-basis: 40%;
+            @media screen and (max-width: 500px) {
+                //-webkit-flex-basis: 40%;
+                height: 500px;
+                //max-height: auto;
+                margin-right: 0;
+                }
+            .amount-con {
+                display: flex;
+                flex-wrap: wrap;
                 gap: 2rem;
                 margin-top: 2rem;
-                .income, .expense{
-                    grid-column: span 2;
-                }
-                .income, .expense, .balance{
-                    background: #FCF6F9;
-                    border: 2px solid #FFFFFF;
-                    box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-                    border-radius: 20px;
-                    padding: 1rem;
-                    p{
-                        font-size: 3.5rem;
-                        font-weight: 700;
-                    }
-                }
 
-                .balance{
-                    grid-column: 2 / 4;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    p{
-                        color: var(--color-green);
-                        opacity: 0.6;
-                        font-size: 4.5rem;
-                    }
+            @media screen and (max-width: 500px) {
+                height: auto; // Set height to 'auto' for small screens
+                 grid-column: unset;
+                 width: none;
                 }
             }
         }
+        
+        .history-con {
+            flex: 1;
+            //padding-left: 3rem;
 
-        .history-con{
-            grid-column: 4 / -1;
-            h2{
+        @media screen and (max-width: 500px) {
+                margin-top: 2rem;
+                margin-left: 0; 
+                }
+
+            h2 {
                 margin: 1rem 0;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
             }
-            .salary-title{
+            
+            .expense-title {
                 font-size: 1.2rem;
-                span{
+                
+                span {
                     font-size: 1.8rem;
                 }
             }
-            .salary-item{
+            
+            .expense-item {
                 background: #FCF6F9;
                 border: 2px solid #FFFFFF;
                 box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -161,13 +157,42 @@ const DashboardStyled = styled.div`
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                p{
+                
+                p {
                     font-weight: 600;
                     font-size: 1.6rem;
                 }
             }
         }
     }
+    .total-expense{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #FCF6F9;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+        border-radius: 20px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-size: 2rem;
+        gap: .5rem;
+        width: 100%;
+
+        span{
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-green);
+        }
+        @media screen and (max-width: 500px) {
+        background: #FCF6F9;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+        border-radius: 20px;
+        font-size: 2rem;
+        width: 100%;
+      }
+    }
 `;
 
-export default Dashboard
+export default Dashboard;

@@ -71,10 +71,10 @@ function Budget() {
     <IncomeStyled>
       <InnerLayout>
         <h1>Budget</h1>
-        <h2 className='total-income'>
+        <h2 className='total-expense'>
           Total Budget: <span>₹{totalBudget()}</span>
         </h2>
-        <div className='income-content'>
+        <div className='expense-content'>
           <Form onSubmit={handleSubmit}>
             <div className='form-container'>
               <div className='salar-item'>
@@ -100,7 +100,7 @@ function Budget() {
                   </select>
                 </div>
 
-                {category === "other" && (
+                {category === "Other" && (
                   <div className='input-control'>
                     <input
                       type='text'
@@ -115,7 +115,7 @@ function Budget() {
               </div>
               
                
-                  <div className='card-buget'>
+                  <div className='card-budget'>
                     
 
                     <button
@@ -131,7 +131,7 @@ function Budget() {
                     <button className='Add-Budget' onClick={handleSubmit} id="add-budget-button">
                       <i className='fa fa-plus'></i>&nbsp;&nbsp;Add Budget
                     </button>{" "}
-                    &nbsp;&nbsp;&nbsp;
+                   
                     <button className='Delete' id="delete-budget-button" onClick={(e) => {e.preventDefault(); deleteBudget(thisBudget._id);}} >
                       <i className='fa fa-trash'></i>&nbsp;&nbsp;Delete
                     </button>
@@ -149,7 +149,9 @@ function Budget() {
 const IncomeStyled = styled.div`
   display: flex;
   overflow: auto;
-  .total-income {
+  height:100%;
+
+  .total-expense {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,13 +163,14 @@ const IncomeStyled = styled.div`
     margin: 1rem 0;
     font-size: 2rem;
     gap: 0.5rem;
+    
     span {
       font-size: 2.5rem;
       font-weight: 800;
       color: var(--color-green);
     }
   }
-  .income-content {
+  .expense-content {
     display: flex;
     gap: 2rem;
     .incomes {
@@ -175,12 +178,15 @@ const IncomeStyled = styled.div`
     }
   }
   @media screen and (max-width: 768px) {
-    margin: 2rem auto; /* Centering the form horizontally */
+    margin: 1rem auto; /* Centering the form horizontally */
     width: 90%; /* Adjusted width for smaller screens */
   }
 `;
 
 const Form = styled.form`
+height: 100%; /* Set to 100% for full page height */
+max-height: none;
+max-height: none;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -198,6 +204,7 @@ const Form = styled.form`
     resize: none;
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
     color: rgba(34, 34, 96, 0.9);
+
     &::placeholder {
       color: rgba(34, 34, 96, 0.4);
     }
@@ -212,19 +219,30 @@ const Form = styled.form`
     width: 100%;
     display: flex;
     justify-content: flex-end;
+
+    //   @media screen and (max-width: 500px) {
+    //     margin-left:-50%;
+    //     width: fit-content;
+    // }
+ @media screen and (max-width: 500px) {
+      margin-left: 0; /* Adjusted for small screens */
+      width: 100%; /* Adjusted for small screens */
+    }
     select {
+
       margin-top:5%;
       width: 100%;
       color: rgba(34, 34, 96, 0.4);
+       @media screen and (max-width: 500px) {
+        margin-top: 5%;
+        width: 100%;
+      }
+
       &:focus,
       &:active {
         color: rgba(34, 34, 96, 1);
       }
     }
-  }
-  @media screen and (max-width: 768px) {
-   /*  margin: 2rem auto; Centering the form horizontally */
-    width: 90%; /* Adjusted width for smaller screens */
   }
 
 .input-control {
@@ -232,9 +250,17 @@ const Form = styled.form`
       width: 30rem;
     }
   }
-  .card-buget {
+  .card-budget {
+    @media screen and (max-width: 500px) {
+    margin-left: 0;
+      }
     .on {
-margin-top:10%;
+      @media screen and (max-width: 500px) {
+        margin-left: 0;
+        width: 30%;
+      }
+      margin-top:10%;
+     margin-bottom: 10%;
       width: 20%;
       margin-left: 1rem;
       outline: none;
@@ -253,7 +279,12 @@ margin-top:10%;
       background-color: var(--color-green);
     }
     .off {
+            @media screen and (max-width: 500px) {
+        margin-left: 0;
+        width: 30%;
+      }
       margin-top:10%;
+      margin-bottom: 10%;
       width: 20%;
       margin-left: 1rem;
       outline: none;
@@ -273,6 +304,9 @@ margin-top:10%;
   }
 
   button.Add-Budget {
+    @media screen and (max-width: 500px) {
+    margin-left:0;
+   }
     margin-top:10%;
     width: 50%;
     outline: none;
@@ -291,6 +325,9 @@ margin-top:10%;
     color: white;
   }
   button.Delete {
+        @media screen and (max-width: 500px) {
+margin-left:0;
+   }
     width: 45%;
     outline: none;
     border: none;
@@ -308,10 +345,7 @@ margin-top:10%;
     color: white;
     text-align: center;
   }
-   @media screen and (max-width: 768px) {
-    margin: 2rem auto; /* Centering the form horizontally */
-    width: 90%; /* Adjusted width for smaller screens */
-    margin-left: 50%;
+
   }
 `;
 

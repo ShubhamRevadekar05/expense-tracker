@@ -292,16 +292,20 @@ export const GlobalProvider = ({children}) => {
         return budget;
     }
 
-    const checkBudget = (category, amount) => {
+const checkBudget = (category, amount) => {
         let categories = getCategories();
         let budget = getBudgetByCategory(category);
-        let totalMonthlyCategoryWiseExpense = getTotalMonthlyCategoryWiseExpense();
-        let totalExpenseByCategory = category !== "Overall" ? totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === category)] : getTotalExpensesThisMonth();
-        let amountDiff =  budget.amount - (parseInt(totalExpenseByCategory)+parseInt(amount));
-        if(amountDiff < 1) {
-            NotificationManager.warning("", `Budget for category ${category} is exceeding by ${Math.abs(amountDiff)}`);
+        if(budget.amount !== 0) {
+            let totalMonthlyCategoryWiseExpense = getTotalMonthlyCategoryWiseExpense();
+            let totalExpenseByCategory = category !== "Overall" ? totalMonthlyCategoryWiseExpense[categories.findIndex(element => element === category)] : getTotalExpensesThisMonth();
+            let amountDiff =  budget.amount - (parseInt(totalExpenseByCategory)+parseInt(amount));
+            if(amountDiff < 1) {
+                NotificationManager.warning("", `Budget for category ${category} is exceeding by ${Math.abs(amountDiff)}`);
+            }
         }
     }
+
+
 
     return (
         <GlobalContext.Provider value={{

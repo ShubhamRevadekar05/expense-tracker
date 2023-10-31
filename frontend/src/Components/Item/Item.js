@@ -2,91 +2,31 @@ import React from "react";
 import styled from "styled-components";
 import { dateFormat } from "../../utils/dateFormat";
 import {
-  bitcoin,
-  book,
   calender,
-  card,
-  circle,
-  clothing,
   comment,
-  dollar,
-  food,
-  freelance,
-  medical,
   money,
-  piggy,
-  stocks,
-  takeaway,
   tick,
   trash,
-  tv,
-  users,
-  yt,
 } from "../../utils/Icons";
 import Button from "../Button/Button";
 
-function IncomeItem({
+function Item({
   id,
   title,
   amount,
   date,
   category,
-  description,
   deleteItem,
   makePayment,
   indicatorColor,
   type,
 }) {
-  const categoryIcon = () => {
-    switch (category) {
-      case "salary":
-        return money;
-      case "freelancing":
-        return freelance;
-      case "investments":
-        return stocks;
-      case "stocks":
-        return users;
-      case "bitcoin":
-        return bitcoin;
-      case "bank":
-        return card;
-      case "youtube":
-        return yt;
-      case "other":
-        return piggy;
-      default:
-        return "";
-    }
-  };
-
-  const expenseCatIcon = () => {
-    switch (category) {
-      case "education":
-        return book;
-      case "groceries":
-        return food;
-      case "health":
-        return medical;
-      case "subscriptions":
-        return tv;
-      case "takeaways":
-        return takeaway;
-      case "clothing":
-        return clothing;
-      case "travelling":
-        return freelance;
-      case "other":
-        return circle;
-      default:
-        return "";
-    }
-  };
+  
 
   return (
-    <IncomeItemStyled indicator={indicatorColor}>
+    <ItemStyled indicator={indicatorColor}>
       <div className='icon'>
-        {type === "expense" ? expenseCatIcon() : categoryIcon()}
+        {money}
       </div>
       <div className='content'>
         <h5>{title}</h5>
@@ -104,13 +44,16 @@ function IncomeItem({
             </p>
           </div>
 
-          <div className='row'>
+ 
+        </div>
+        <div>
+        <div className='row'>
             {type === 'payment' ?
             <>
               <div className='btn-con col'>
               <Button
                 icon={tick}
-                bPad={"1rem"}
+                bPad={"0.5rem"}
                 bRad={"50%"}
                 bg={"var(--primary-color"}
                 color={"#fff"}
@@ -122,10 +65,11 @@ function IncomeItem({
             </> :
             <>
             </>}
+          
             <div className='btn-con col'>
               <Button
                 icon={trash}
-                bPad={"1rem"}
+                bPad={"0.5rem"}
                 bRad={"50%"}
                 bg={"var(--primary-color"}
                 color={"#fff"}
@@ -137,11 +81,28 @@ function IncomeItem({
           </div>
         </div>
       </div>
-    </IncomeItemStyled>
+    </ItemStyled>
   );
 }
 
-const IncomeItemStyled = styled.div`
+const ItemStyled = styled.div`
+.row {
+  display: flex; /* Make the buttons inside 'row' flex containers */
+  justify-content: space-between; /* Space buttons apart */
+  align-items: center; /* Center buttons vertically */
+  @media screen and (max-width: 500px) {
+    /* Optional: Adjust spacing or font size for mobile */
+    /* Example: margin: 0.5rem; */
+  }
+}
+
+.btn-con {
+  width: 48%; /* Set the width of each button container */
+  text-align: center; /* Center the button horizontally */
+  @media screen and (max-width: 500px) {
+    width: 48%; /* Adjust width for mobile screens */
+  }
+}
   background: #fcf6f9;
   border: 2px solid #ffffff;
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -162,6 +123,10 @@ const IncomeItemStyled = styled.div`
     align-items: center;
     justify-content: center;
     border: 2px solid #ffffff;
+    @media screen and (max-width: 500px) {
+        width: 10px;
+    height: 10px;
+        }
     i {
       font-size: 2.6rem;
     }
@@ -193,20 +158,29 @@ const IncomeItemStyled = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       .text {
         display: flex;
         align-items: center;
         gap: 1.5rem;
+
+        @media screen and (max-width: 500px) {
+        gap: 0.5rem;
+        }
+
         p {
           display: flex;
           align-items: center;
           gap: 0.5rem;
           color: var(--primary-color);
           opacity: 0.8;
+          @media screen and (max-width: 500px) {
+        gap: 0.5rem;
+        }
         }
       }
     }
   }
 `;
 
-export default IncomeItem;
+export default Item;

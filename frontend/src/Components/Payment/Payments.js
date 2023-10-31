@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
-import IncomeItem from '../IncomeItem/IncomeItem';
+import Item from '../Item/Item';
 import PaymentForm from './PaymentForm';
 
 function Payments() {
@@ -16,14 +16,14 @@ function Payments() {
         <AnalysisStyled>
             <InnerLayout>
                 <h1>Payments</h1>
-                <div className="income-content">
+                <div className="payment-content">
                     <div className="form-container">
                         <PaymentForm />
                     </div>
                     <div className="incomes">
                         {payments.map((payment) => {
                             const {_id, title, amount, dueDate, category, description} = payment;
-                            return <IncomeItem
+                            return <Item
                                 key={_id}
                                 id={_id} 
                                 title={title} 
@@ -65,12 +65,20 @@ const AnalysisStyled = styled.div`
             color: var(--color-green);
         }
     }
-    .income-content{
+    .payment-content{
         display: flex;
+        flex-direction: row; 
         gap: 2rem;
+        @media screen and (max-width: 500px) {
+    flex-direction: column; /* Switch to vertical on smaller screens */
+}
+
         .incomes{
             flex: 1;
         }
+    }
+    .form-container{
+        flex: 1;
     }
 `;
 
