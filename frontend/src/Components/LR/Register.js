@@ -80,7 +80,7 @@ const Form = styled.form`
   position: absolute;
   transform: translate(-50%, -50%);
   margin-left: 50%; /* Center the form horizontally on larger screens */
-  margin-top: 500px;
+  margin-top: 300px;
   border-radius: 10px;
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.1);
