@@ -52,6 +52,7 @@ function ExpenseForm() {
       date,
       category,
       description,
+      otherCategory,
       receipt: receipt ? {name: receipt.name, data: await convertBase64(receipt)} : ""
     });
     setInputState({

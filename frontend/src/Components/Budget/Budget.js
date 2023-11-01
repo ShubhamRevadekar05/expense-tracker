@@ -4,7 +4,7 @@ import { useGlobalContext } from "../../context/globalContext";
 import { InnerLayout } from "../../styles/Layouts";
 
 function Budget() {
-  const { budgets, addBudget, getBudgets, deleteBudget, totalBudget, error, setError } = useGlobalContext();
+  const { budgets, addBudget, getBudgets, deleteBudget, totalBudget, error, setError, getCategories } = useGlobalContext();
   const [inputState, setInputState] = useState({
     amount: "",
     category: "Overall",
@@ -41,6 +41,7 @@ function Budget() {
       });
       document.getElementById("delete-budget-button").hidden = true;
     }
+    setCategories(getCategories());
   }, [budgets, category]);
 
   useEffect(() => {
@@ -90,6 +91,7 @@ function Budget() {
                     {categories.map(element => {
                       return <option value={element}>{element}</option>
                     })}
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
