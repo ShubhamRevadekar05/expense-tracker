@@ -4,7 +4,7 @@ import { useGlobalContext } from "../../context/globalContext";
 import { InnerLayout } from "../../styles/Layouts";
 
 function Budget() {
-  const { budgets, addBudget, getBudgets, deleteBudget, totalBudget, error, setError, getCategories } = useGlobalContext();
+  const { logged, setActive, budgets, addBudget, getBudgets, deleteBudget, totalBudget, error, setError, getCategories } = useGlobalContext();
   const [inputState, setInputState] = useState({
     amount: "",
     category: "Overall",
@@ -17,9 +17,12 @@ function Budget() {
   const [thisBudget, setThisBudget] = useState(null);
 
   useEffect(() => {
-    getBudgets();
-    document.getElementById("add-budget-button").hidden = true
-    document.getElementById("delete-budget-button").hidden = true;
+    if(!logged) setActive(7);
+    else {
+      getBudgets();
+      document.getElementById("add-budget-button").hidden = true
+      document.getElementById("delete-budget-button").hidden = true;
+    }
   }, []);
   
   useEffect(() => {

@@ -99,6 +99,8 @@ export const GlobalProvider = ({children}) => {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
+        }).then(res => {
+            if(res.status === 200) NotificationManager.success("", "Payment Successful");
         })
         .catch((err) =>{
             setError(err.response.data.message)
@@ -113,7 +115,7 @@ export const GlobalProvider = ({children}) => {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
         }).then(res => {
-            NotificationManager.success("", "Budget Added")
+           if(res.status === 200) NotificationManager.success("", res.data.message);
         })
         .catch((err) =>{
             setError(err.response.data.message)
@@ -161,6 +163,9 @@ export const GlobalProvider = ({children}) => {
 
     const register = async (userDetails) => {
         await axios.post(`${BASE_URL}register`, userDetails)
+        .then(res => {
+            NotificationManager.success("", "Registration Successful");
+        })
         .catch((err) =>{
             setError(err.response.data.message)
         })
@@ -171,6 +176,7 @@ export const GlobalProvider = ({children}) => {
         let response = await axios.post(`${BASE_URL}login`, userDetails)
         .catch((err) =>{
             setError(err.response.data.message)
+            NotificationManager.error("", err.response.data.message)
         })
         if(response.status === 200) {
             setLogged(true);
