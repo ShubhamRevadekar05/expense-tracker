@@ -1,19 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
 import Item from '../Item/Item';
 import ExpenseForm from './ExpenseForm';
+import { Modal, ModalContent } from "../Modal/Modal";
 
 function Expenses() {
     const {logged, setActive, expenses, getExpenses, deleteExpense, getTotalExpensesThisMonth} = useGlobalContext()
 
+    const [isOpen, setIsopen] = useState(false);
+    const [modal, setModal] = useState(null)
+
+    const handleReceiptModal = (receipt) => {
+        if(isOpen) {
+            setModal(<ModalContent onClose={() => {setIsopen(false); setModal(null);}}>
+                <img src={"/media/" + receipt} />
+            </ModalContent>)
+        }
+        else {
+            setModal(null);
+        }
+    }
     useEffect(() =>{
         if(!logged) setActive(7);
         getExpenses();
     }, [])
     return (
         <ExpenseStyled>
+            {modal}
             <InnerLayout>
                 <h1>Expenses</h1>
                 <h2 className="total-expense">Total Expense: <span>₹{getTotalExpensesThisMonth()}</span></h2>
@@ -23,8 +38,9 @@ function Expenses() {
                     </div>
                     <div className="expenses">
                         {expenses.map((expense) => {
-                            const {_id, title, amount, date, category, description, type} = expense;
-                            return <Item
+                            const {_id, title, amount, date, category, description, type, receipt} = expense;
+                            return <Modal onOpen={() => setIsopen((prev) => !prev)}>
+                            <Item
                                 key={_id}
                                 id={_id} 
                                 title={title} 
@@ -32,10 +48,13 @@ function Expenses() {
                                 amount={`₹${amount}`} 
                                 date={date} 
                                 type={"expense"}
-                                category={category} 
+                                category={category}
+                                receipt={receipt}
+                                handleReceiptModal={handleReceiptModal}
                                 indicatorColor="var(--color-green)"
                                 deleteItem={deleteExpense}
                             />
+                            </Modal>
                         })}
                     </div>
                 </div>

@@ -19,13 +19,15 @@ function Item({
   deleteItem,
   makePayment,
   indicatorColor,
+  handleReceiptModal,
+  receipt,
   type,
 }) {
   
 
   return (
     <ItemStyled indicator={indicatorColor}>
-      <div className='icon'>
+      <div className='icon' style={type === 'expense' && receipt ? {cursor: "pointer"} : {cursor: "auto"}} onClick={() => handleReceiptModal(receipt)}>
         {money}
       </div>
       <div className='content'>
