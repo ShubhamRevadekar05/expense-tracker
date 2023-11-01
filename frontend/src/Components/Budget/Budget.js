@@ -13,7 +13,7 @@ function Budget() {
   const { amount, category, otherCategory } = inputState;
 
   const [isOn, setIsOn] = useState(false); // Declare isOn state variable here
-
+  const [categories, setCategories] = useState(getCategories());
   const [thisBudget, setThisBudget] = useState(null);
 
   useEffect(() => {
@@ -86,17 +86,10 @@ function Budget() {
                     id='category'
                     onChange={handleInput("category")}
                   >
-                    <option value='Overall'>
-                      Overall
-                    </option>
-                    <option value='Education'>Education</option>
-                    <option value='Electricity'>Electricity</option>
-                    <option value='Groceries'>Groceries</option>
-                    <option value='Insurance'>Insurance</option>
-                    <option value='Medicine'>Medicine</option>
-                    <option value='Rent'>Rent</option>
-                    <option value='Transportation'>Transportation</option>
-                    <option value='Other'>Other</option>
+                    <option value="Overall">Overall</option>
+                    {categories.map(element => {
+                      return <option value={element}>{element}</option>
+                    })}
                   </select>
                 </div>
 
