@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react"
 import {NotificationManager} from 'react-notifications';
 import axios from 'axios'
 
-const BASE_URL = "http://localhost:8080/api/";
+const BASE_URL = "/api/";
 
 const GlobalContext = React.createContext()
 
