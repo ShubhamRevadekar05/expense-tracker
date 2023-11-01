@@ -7,7 +7,8 @@ import Button from "../Button/Button";
 import { plus } from "../../utils/Icons";
 
 function ExpenseForm() {
-  const { addExpense, error, setError } = useGlobalContext();
+  const { addExpense, error, setError, getCategories } = useGlobalContext();
+  const [categories, setCategories] = useState(getCategories());
   const [inputState, setInputState] = useState({
     title: "",
     amount: "",
@@ -63,6 +64,7 @@ function ExpenseForm() {
       description: "",
       receipt: ""
     });
+    setCategories(getCategories());
     e.target.reset();
   };
 
@@ -120,17 +122,10 @@ function ExpenseForm() {
             id='category'
             onChange={handleInput("category")}
           >
-            <option value='' disabled>
-              Select Option
-            </option>
-            <option value='Education'>Education</option>
-            <option value='Electricity'>Electricity</option>
-            <option value='Groceries'>Groceries</option>
-            <option value='Insurance'>Insurance</option>
-            <option value='Medicine'>Medicine</option>
-            <option value='Rent'>Rent</option>
-            <option value='Transportation'>Transportation</option>
-            <option value='Other'>Other</option>
+            {categories.map(element => {
+              return <option value={element}>{element}</option>
+            })}
+            <option value="Other">Other</option>
           </select>
         </div>
         {category === "Other" && (
