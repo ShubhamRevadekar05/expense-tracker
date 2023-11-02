@@ -25,7 +25,7 @@ function Dashboard() {
                   NotificationManager.warning("", `Your payment ${element.title} is due on ${dateFormat(element.dueDate)}`);
               }
           });
-        }, [120000])
+        }, 120000)
         return () => clearInterval(paymentReminder);
       }, [payments]);
 
