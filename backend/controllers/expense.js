@@ -25,6 +25,7 @@ exports.addExpense = async (req, res) => {
                     encoding: "base64"
                 }, function(err) {;});
             }
+            var track=20;
             const expense = ExpenseSchema({
                 title,
                 amount,
